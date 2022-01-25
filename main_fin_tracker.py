@@ -50,8 +50,8 @@ def init(full_path, override=False):
     '''
     import pandas as pd
     if path.isfile(full_path) and not override:
-        df_month = pd.read_csv(full_path).drop(['Unnamed: 0'], axis=1)
-        df_log = pd.read_csv('Data/data_all.csv').drop(['Unnamed: 0'], axis=1)
+        df_month = pd.read_csv(full_path)
+        df_log = pd.read_csv('Data/data_all.csv')
     else:
         df_month = init_df_monthly()
         df_log = init_df_log()
