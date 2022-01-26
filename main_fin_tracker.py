@@ -35,12 +35,15 @@ def init_df_log():
     return df_log
 
 
-def update_file(data_month, data_log, full_path):
-    data_month.to_csv(full_path, index=False)
-    data_log.to_csv('Data/data_all.csv', index=False)
+def update_file(data, direc, file_list):
+    from os import path
+    for file, df in zip(file_list, data):
+        full_path = path.join(direc, file)
+        df.to_csv(full_path, index=False)
+    # data_log.to_csv('Data/data_all.csv', index=False)
 
 
-def init(full_path, override=False):
+def init(direc, file_list, override=False):
     '''
     This function initiated the data object: If there is already an existing csv file, the program will load it and
     override it, else it will create an empty csv file.
@@ -48,14 +51,22 @@ def init(full_path, override=False):
     -------
     data csv file
     '''
+    from os import path
+    import shutil
     import pandas as pd
-    if path.isfile(full_path) and not override:
-        df_month = pd.read_csv(full_path)
-        df_log = pd.read_csv('Data/data_all.csv')
+    data = []
+    for file in file_list:
+        full_path = path.join(direc, file)
+        if path.isfile(full_path) and not override:
+            back_path = path.join(direc+'/Backup', file)
+            shutil.copyfile(full_path, back_path)
+            df = pd.read_csv(full_path)
+            data.append(df)
+    if data:
+        df_month, df_log = data
     else:
         df_month = init_df_monthly()
         df_log = init_df_log()
-        # update_file(df_month, df_log, full_path)
     return df_month, df_log
 
 
@@ -101,14 +112,12 @@ def plot_total(data):
 
 
 if __name__ == '__main__':
-    from os import path
-
-    filename = 'fin_data.csv'
+    file_month = 'fin_data.csv'
+    file_log = 'data_all.csv'
     directory = 'Data'
-    fullpath = path.join(directory, filename)
     clear = False
-    df_month, df_log = init(fullpath, clear)
-    get_from_user = True
+    df_month, df_log = init(directory, [file_month, file_log], clear)
+    get_from_user = False
     while get_from_user:
         item = get_expense()
         df_log = add_item_data_log(df_log, item[1:])
@@ -117,7 +126,7 @@ if __name__ == '__main__':
         if proceed == 'N':
             get_from_user = False
             print(df_log)
-    update_file(df_month, df_log, fullpath)
+    update_file([df_month, df_log], directory, [file_month, file_log])
     print('Finish')
 
 
