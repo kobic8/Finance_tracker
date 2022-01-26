@@ -86,7 +86,6 @@ def add_item_data_log(data_log, expense):
 
 def add_item_data_month(data_month, expense):
     day, month, year = expense[-1].split('/')
-    ind_cat = expense[0]+1
     cell = data_month.at[expense[0], month] # .iloc[Ncat+1, month]
     cell += expense[2]
     data_month.at[expense[0], month] = cell
