@@ -37,9 +37,13 @@ def init_df_log():
 
 def update_file(data, direc, file_list):
     from os import path
+    import shutil
     for file, df in zip(file_list, data):
         full_path = path.join(direc, file)
+        back_path = path.join(direc + '/Backup', file)
+        shutil.copyfile(full_path, back_path)
         df.to_csv(full_path, index=False)
+    return True
     # data_log.to_csv('Data/data_all.csv', index=False)
 
 
@@ -58,8 +62,8 @@ def init(direc, file_list, override=False):
     for file in file_list:
         full_path = path.join(direc, file)
         if path.isfile(full_path) and not override:
-            back_path = path.join(direc+'/Backup', file)
-            shutil.copyfile(full_path, back_path)
+            # back_path = path.join(direc+'/Backup', file)
+            # shutil.copyfile(full_path, back_path)
             df = pd.read_csv(full_path)
             data.append(df)
     if data:
@@ -97,6 +101,7 @@ def add_item_data_log(data_log, expense):
 
 def add_item_data_month(data_month, expense):
     day, month, year = expense[-1].split('/')
+    month = month.strip('0')
     cell = data_month.at[expense[0], month] # .iloc[Ncat+1, month]
     cell += expense[2]
     data_month.at[expense[0], month] = cell
