@@ -20,7 +20,7 @@ def init_df_monthly():
     for month in months:
         data_dict[month] = [0]*10
     df_month = pd.DataFrame(data_dict)
-    df_month.to_csv('Data/fin_data.csv', index=False)
+    df_month.to_csv('Data/fin_data.csv', index=False, encoding="utf-8-sig")
     return df_month
 
 
@@ -31,7 +31,7 @@ def init_df_log():
     for col in headers:
         data_dict[col] = []
     df_log = pd.DataFrame(data_dict)
-    df_log.to_csv('Data/data_all.csv', index=False)
+    df_log.to_csv('Data/data_all.csv', index=False, encoding="utf-8-sig")
     return df_log
 
 
@@ -42,7 +42,7 @@ def update_file(data, direc, file_list):
         full_path = path.join(direc, file)
         back_path = path.join(direc + '/Backup', file)
         shutil.copyfile(full_path, back_path)
-        df.to_csv(full_path, index=False)
+        df.to_csv(full_path, index=False, encoding="utf-8-sig")
     return True
     # data_log.to_csv('Data/data_all.csv', index=False)
 
@@ -84,7 +84,7 @@ def get_expense(expense_date='', expense_store='supermarket', expense_amount=0, 
     expense_cat = categories[N_cat]
     expense_date = input("Enter purchase date [dd/mm/yyyy]\n")
     expense_store = input("where did you buy it?")
-    expense_amount = int(input('How much?'))
+    expense_amount = "{:.2f}".format(float(input('How much?')))
     expense = [N_cat, expense_cat, expense_amount, expense_name, expense_store, expense_date]
     return expense
 
@@ -101,7 +101,9 @@ def add_item_data_log(data_log, expense):
 
 def add_item_data_month(data_month, expense):
     day, month, year = expense[-1].split('/')
-    month = month.strip('0')
+    # TODO sometimes month appears as '01' and sometimes as '1'
+    if month not in data_month.columns:
+        month = month.strip('0')
     cell = data_month.at[expense[0], month] # .iloc[Ncat+1, month]
     cell += expense[2]
     data_month.at[expense[0], month] = cell

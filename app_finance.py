@@ -40,8 +40,8 @@ if action == "Enter new data":
         if submit_save:
             print("update the data")
             item = [categories.index(category), category, amount, name, store, date_str]
-            st.dataframe(df_log)
-            st.text(item)
+            # st.dataframe(df_log)
+            # st.text(item)
             df_log = fin.add_item_data_log(df_log, item[1:])
             st.text("Please verify the following traffic update")
             st.dataframe(df_log.iloc[-1:])
@@ -54,14 +54,16 @@ if action == "Enter new data":
                 # cell = df_month.at[item[0], month.strip('0')]
                 # st.text(f"content is {cell}")
                 # st.text(df_month.columns)
+                # st.text(month in df_month.columns)
+                # st.text(month.strip('0') in df_month.columns)
                 df_month = fin.add_item_data_month(df_month, item)
                 saved = True
                 if saved:
                     st.success("Dataset is updated")
             else:
                 df_log = df_log.head(-1)
-            # TODO update the data
-        st.dataframe(df_log)
+        # update the data
+        st.dataframe(df_log.iloc[-4:])
         st.dataframe(df_month)
         update = fin.update_file([df_month, df_log], directory, [file_month, file_log])
         if update:
