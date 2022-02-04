@@ -1,17 +1,16 @@
-# This is a sample Python script.
+# This is the main Python script that includes the operating functions for the finance app.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-import pandas as pd
-
+# Press Shift+F10 to execute it independently without streamlit and function from the terminal
 
 def init_df_monthly():
-    '''
-    This function initiates the data object as a monthly table by expense categories:
-    Each row is for each category and each column in set per month.
+    """
+    This function initiates the dataframe object as a monthly table by expense categories:
+    Each row stands for each category and each column represents a month.
+
+    Returns
     -------
-    data-frame object
-    '''
+    df_month: empty dataframe object for a month
+    """
     import pandas as pd
     categories = ['Alt.payments', 'Const.payments', 'Transportation', 'Medical', 'Housing', 'Personal',
                   'Entertainment', 'Gifts', 'Food', 'Income']
@@ -25,6 +24,14 @@ def init_df_monthly():
 
 
 def init_df_log():
+    """
+    This function initiates the dataframe object as a log table of all expenses.
+    The headers of the empty table will include: ['Category', 'Amount', 'Item', 'Store', 'Date']
+
+    Returns
+    -------
+    df_log: empty dataframe object for expenses log
+    """
     import pandas as pd
     data_dict = {}
     headers = ['Category', 'Amount', 'Item', 'Store', 'Date']
@@ -36,6 +43,19 @@ def init_df_log():
 
 
 def update_file(data, direc, file_list):
+    """
+    This procedure updates the current data csv files with the new dataframe content.
+    Before updating the files, this procedure saves the original files in a backup directory
+    Parameters
+    ----------
+    data      [list] list of the two dataframes: df_month, df_log
+    direc     [str] path to the directory to save the output csv files
+    file_list [list] list of the two names of the csv files correspond to data month and data_log
+
+    Returns
+    -------
+
+    """
     from os import path
     import shutil
     for file, df in zip(file_list, data):
@@ -48,22 +68,26 @@ def update_file(data, direc, file_list):
 
 
 def init(direc, file_list, override=False):
-    '''
-    This function initiated the data object: If there is already an existing csv file, the program will load it and
-    override it, else it will create an empty csv file.
+    """
+    This functions initiates the two dataframes: month and log when the program starts. If the csv data files already
+    exist and override flag is set to FALSE, then the output is the existed data in the files, else new data files
+    will be created.
+    Parameters
+    ----------
+    direc     [str] path to the directory to save the output csv files
+    file_list [list] list of the two names of the csv files correspond to data month and data_log
+    override  [bool] a flag to direct the function if to delete the existing files (and create new ones) or not
+
     Returns
     -------
-    data csv file
-    '''
+    df_month, df_log: dataframes
+    """
     from os import path
-    import shutil
     import pandas as pd
     data = []
     for file in file_list:
         full_path = path.join(direc, file)
         if path.isfile(full_path) and not override:
-            # back_path = path.join(direc+'/Backup', file)
-            # shutil.copyfile(full_path, back_path)
             df = pd.read_csv(full_path)
             data.append(df)
     if data:
@@ -76,6 +100,20 @@ def init(direc, file_list, override=False):
 
 def get_expense(expense_date='', expense_store='supermarket', expense_amount=0, expense_name='item',
                 expense_cat='electrics'):
+    """
+    This procedure gets input from the user about a specific purchase and returns the collected data in a list.
+    Parameters
+    ----------
+    expense_date   [str] purchase date [dd/mm/yyyy]
+    expense_store  [str] the name of the store
+    expense_amount [float] the amount of money for the expense
+    expense_name   [str] the name of the product
+    expense_cat    [str] the category corresponds to the expense.
+
+    Returns
+    -------
+    a list that consists of all collected data related to the expense.
+    """
     expense_name = input("what did you buy?")
     categories = ['Alt.payments', 'Const.payments', 'Transportation', 'Medical', 'Housing', 'Personal',
                   'Entertainment', 'Gifts', 'Food', 'Income']
@@ -90,6 +128,17 @@ def get_expense(expense_date='', expense_store='supermarket', expense_amount=0, 
 
 
 def add_item_data_log(data_log, expense):
+    """
+    This procedure updates the dataframe 'data_log' by the data given in the 'expense' list.
+    Parameters
+    ----------
+    data_log [pandas dataframe]
+    expense  [list] includes all data related to a specific item purchased.
+
+    Returns
+    -------
+    updated data frame
+    """
     import pandas as pd
     indexing = data_log.columns
     if len(expense) != len(data_log.columns):
@@ -100,6 +149,17 @@ def add_item_data_log(data_log, expense):
 
 
 def add_item_data_month(data_month, expense):
+    """
+    This procedure updates the dataframe 'data_month' by the data given in the 'expense' list.
+    Parameters
+    ----------
+    data_month [pandas dataframe]
+    expense  [list] includes all data related to a specific item purchased.
+
+    Returns
+    -------
+    updated data frame
+    """
     day, month, year = expense[-1].split('/')
     # TODO sometimes month appears as '01' and sometimes as '1'
     if month not in data_month.columns:
@@ -135,7 +195,3 @@ if __name__ == '__main__':
             print(df_log)
     update_file([df_month, df_log], directory, [file_month, file_log])
     print('Finish')
-
-
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/

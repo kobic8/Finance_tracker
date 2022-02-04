@@ -1,5 +1,4 @@
 import streamlit as st
-import datetime
 import main_fin_tracker as fin
 import pandas as pd
 
@@ -49,13 +48,6 @@ if action == "Enter new data":
             if check_save:
                 saved = False
                 day, month, year = item[-1].split('/')
-                # st.text(f"date is: {item[-1]}")
-                # st.text(f"month is: {month.strip('0')}")
-                # cell = df_month.at[item[0], month.strip('0')]
-                # st.text(f"content is {cell}")
-                # st.text(df_month.columns)
-                # st.text(month in df_month.columns)
-                # st.text(month.strip('0') in df_month.columns)
                 df_month = fin.add_item_data_month(df_month, item)
                 saved = True
                 if saved:
@@ -100,9 +92,3 @@ if submit_load:
 
     st.header("Last updated traffic")
     st.dataframe(df_log.iloc[-2:])
-
-            # st.write(f"hello and welcome: {date.strftime('%d/%m/%Y')}")
-# year, month, day = date.split('-')
-# st.write(f"day is {day} month is {month} and the year: {year}")
-
-# st expander to close the form
