@@ -4,6 +4,7 @@ import pandas as pd
 
 # Text
 st.title("Kobic's Finance App")
+st.info(f" Last updated: {fin.last_updated('r')}")
 # Init
 file_month = 'fin_data.csv'
 file_log = 'data_all.csv'
@@ -52,6 +53,7 @@ if action == "Enter new data":
                 saved = True
                 if saved:
                     st.success("Dataset is updated")
+                    fin.last_updated('w')
             else:
                 df_log = df_log.head(-1)
         # update the data
@@ -74,9 +76,14 @@ if submit_load:
     nd_savings = df_income.values - df_outcome.values
     df_savings = pd.DataFrame(nd_savings, columns=df_outcome.columns, index=["Savings"])  # st.dataframe(df_savings)
     # create TOTAL dataframe: Income, outcome, savings
-    df_total = df_income.transpose()
+    # df_total = df_income.transpose()
+    # df_total["Outcome"] = df_outcome.transpose().values
+    # df_total["Savings"] = df_savings.transpose().values
+
+    df_total = df_savings.transpose()
     df_total["Outcome"] = df_outcome.transpose().values
-    df_total["Savings"] = df_savings.transpose().values
+    df_total["Income"] = df_income.transpose().values
+
     df_total.index = ['%02d' % (month) for month in range(1, 13)]  # st.dataframe(df_total)
     # plot graph
     st.bar_chart(df_total)

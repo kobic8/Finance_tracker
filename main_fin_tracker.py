@@ -170,6 +170,20 @@ def add_item_data_month(data_month, expense):
     return data_month
 
 
+def last_updated(action='w'):
+    from datetime import datetime
+
+    file_name = 'Data/last_update.txt'
+    if action == 'r':
+        with open(file_name, 'r') as f:
+            date_input = f.read()
+        return date_input
+    if action == 'w':
+        date_input = datetime.now().strftime("%B %d %Y %H:%M")
+        with open(file_name, 'w') as f:
+            f.write(date_input)
+
+
 def plot_by_cat(data_month):
     pass
 
