@@ -24,10 +24,12 @@ action = st.radio("Please choose your action", ("Check my balance", "Enter new d
 if action == "Enter new data":
     with st.form("new_data"):
         # submit_cancel = st.form_submit_button("Cancel and exit")
-        amount = []
-        amount = st.text_input("Enter the amount of purchase")
-        if amount:
-            amount = int(float(amount))
+        # amount = []
+        # amount = st.text_input("Enter the amount of purchase")
+        # if amount:
+        #     amount = int(float(amount))
+        # amount = "{:.2f}".format(st.number_input("Enter the amount of purchase"))
+        amount = st.number_input("Enter the amount of purchase")
         name = st.text_input("Enter the name of the purchase")
         store = st.text_input("Where did you buy it?")
         categories = ['Alt.payments', 'Const.payments', 'Transportation', 'Medical', 'Housing', 'Personal',
